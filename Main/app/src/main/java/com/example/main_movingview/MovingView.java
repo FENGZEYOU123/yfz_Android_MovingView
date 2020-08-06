@@ -218,11 +218,16 @@ public class MovingView extends ConstraintLayout {
         }
 
         if (DisplayTop <=20&&DisplayTop>=(-20)) {   //上边吸边效果
-            DisplayTop = 0;   //重置移动的 Y 距离为0
+            DisplayTop = 0;
             Display_Bottom = DisplayTop + View_Y_Hight;
-        } else if (Screen_MAX_Width+20>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-20) {  //下边吸边效果
+            Log.e(TAG, "ios_spring_pop: 监测到上边碰到边");
+            return;
+
+        } else if (Screen_MAX_Hight+20>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-20) {  //下边吸边效果
             Display_Bottom = Screen_MAX_Hight;
-            DisplayTop = Display_Bottom - View_X_Width;
+            DisplayTop = Display_Bottom - View_Y_Hight;
+            Log.e(TAG, "ios_spring_pop: 监测到下边碰到边");
+            return;
         }
 
 
