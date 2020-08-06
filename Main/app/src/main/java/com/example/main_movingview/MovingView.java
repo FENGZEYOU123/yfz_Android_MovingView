@@ -200,18 +200,32 @@ public class MovingView extends ConstraintLayout {
             if (DisplayLeft > (-sb_dist * View_X_Width ) && DisplayLeft <= -inner) {  //超出屏幕，但是不超过组件自身sb_dist*宽
                 DisplayLeft = (int)(getLeft() + (-1) * Math.sqrt(-1 * Move_X_Distance / 3));
                 DisplayRight = DisplayLeft + View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 在规定的 内 外 边界内");
+                Log.e(TAG, "ios_spring_pop: 左：在规定的 内 外 边界内");
 
 
             }else if (DisplayLeft<=(-sb_dist * View_X_Width)) {
                 DisplayLeft = (int)(getLeft()-more_slow);
                 DisplayRight = DisplayLeft + View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 超出规定的内 外 边界");
+                Log.e(TAG, "ios_spring_pop: 左：超出规定的内 外 边界");
 
 
-            } else if (DisplayRight > Screen_MAX_Width) {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
-                DisplayRight = Screen_MAX_Width;
+            }
+            else if ((sb_dist*sb_dist * View_X_Width+Screen_MAX_Width )>DisplayRight && DisplayRight >= Screen_MAX_Width-inner)  {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
+                DisplayRight = (int)(Screen_MAX_Width+ Math.sqrt( Move_X_Distance / 3));
                 DisplayLeft = DisplayRight - View_X_Width;
+                if(DisplayRight==0||DisplayLeft==0){
+                    Log.e(TAG, "报错:  "+DisplayRight+"   "+DisplayLeft );
+
+                }
+                Log.e(TAG, "ios_spring_pop: 右：在规定的 内 外 边界内");
+
+            }
+            else if (DisplayLeft>(sb_dist*sb_dist * View_X_Width+Screen_MAX_Width)) {
+                DisplayRight = (int)(Screen_MAX_Width+more_slow);
+                DisplayLeft = DisplayRight - View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 右：超出规定的内 外 边界");
+
+
             }
 
 
