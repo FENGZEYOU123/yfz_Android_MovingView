@@ -11,6 +11,18 @@ import android.view.WindowManager;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+/**
+ *  编写者姓名：三水
+ *  开始日期：2020年7月13日
+ *  最后更新日期：2020年8月6日
+ *
+ *  功能介绍：
+ *
+ *
+ *
+ *
+ *
+ * **/
 public class MovingView extends ConstraintLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
@@ -66,8 +78,6 @@ public class MovingView extends ConstraintLayout {
     /**
      *   Screen_MAX_Width 记录屏幕的最大宽度   //确保组件不会超出
      **/
-
-
 
     private  int Move_X_Distance;
     /**
@@ -126,26 +136,26 @@ public class MovingView extends ConstraintLayout {
                 break;
 
             case MotionEvent.ACTION_MOVE:  //当手指开始移动的时候
-                    //记录移动距离s
+                    //记录移动距离
                     Move_X_Distance = (int)event.getX() - Finger_X;  //记录移动的距离X
                     Move_Y_Distance = (int)event.getY() - Finger_Y;  //记录移动的距离Y
                     Log.d(TAG, "Move_X_Distance 移动距离为: " + Move_X_Distance);
                     Log.d(TAG, "Move_Y_Distance 移动距离为: " + Move_Y_Distance);
                     Log.e(TAG, "....................................");
 
-                    //边界判断
+                    //将要展示的组件的四个顶点位置
                     DisplayLeft = getLeft() + Move_X_Distance;
                     DisplayRight = DisplayLeft + View_X_Width;
                     DisplayTop = getTop() + Move_Y_Distance;
                     Display_Bottom = DisplayTop + View_Y_Hight;
 
 //                  limited_in_Max_Screen();  //限制组件范围，不超过屏幕
-                attach_boundary();
-                    ios_spring_pop();  //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
+                    attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
+                    ios_spring_pop();         //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
-                // 刷新组件位置，形成组件跟随手指移动的效果
-                //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
-                this.layout( DisplayLeft,  DisplayTop,  DisplayRight, Display_Bottom); //左，上，右，下
+                    // 刷新组件位置，形成组件跟随手指移动的效果
+                    //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
+                    this.layout( DisplayLeft,  DisplayTop,  DisplayRight, Display_Bottom); //左，上，右，下
 
 
             case MotionEvent.ACTION_UP:  //当手指上抬起（停止触屏屏幕）
