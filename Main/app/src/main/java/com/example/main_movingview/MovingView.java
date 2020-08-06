@@ -28,80 +28,66 @@ public class MovingView extends ConstraintLayout {
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
     private WindowManager wm=null;
-    private boolean attach_boundary=true;
 
 
     private int inner =20;
     private int outside =40;
-
     /**
-     *  吸附属性设置 inner屏幕内部吸附距离,outside屏幕外部吸附距离
+     *  ***吸附属性设置
+     *  inner屏幕内部吸附距离
+     *  outside屏幕外部吸附距离
      **/
 
-    private double slow = 0.6;
+    private double sb_dist = 0.5,more_slow=1.5;
     /**
-     *  弹簧属性设置 slow放慢移动速度
+     *  ***弹簧属性设置
+     *  sb_dist弹簧距离限制,数字越小，组件能够超出屏幕的距离越小，越早开始压缩
+     *  more_slow移动到弹簧距离限制后，再次放慢移动速率
      **/
 
+    private boolean limited_innter = true;
+    /**
+     *  ***普通限制属性设置
+     *  limited_innter是否限制view移动在屏幕内。true为限制，false为允许组件自由移出屏幕
+     **/
 
-    private int View_X_Width;
+    private int View_X_Width, View_Y_Hight;
     /**
      *  View_X_Width 记录组件的宽度
+     *  View_Y_Hight 记录组件的长度
      **/
 
-    private int View_Y_Hight;
-    /**
-     *   View_Y_Hight 记录组件的长度
-     **/
+    //**************组件坐标系, 是以当前触摸组件左上角为(0,0)*******************//
 
-    private int Finger_X;
+    private int Finger_X,Finger_Y;
     /**
      *  Finger_X 记录点击时手指基于组件坐标系的位置 X
-     **/
-
-    private int Finger_Y;
-    /**
      *  Finger_Y 记录点击时手指基于组件坐标系的位置 Y
      **/
 
     //**************Android坐标系 是以屏幕左上角为(0,0)*******************//
-    private int DisplayLeft;
+    private int DisplayLeft,DisplayRight,DisplayTop,Display_Bottom;
     /**
-     *  DisplayLeft 记录组件的最左边相对于 Android坐标系x 的位置
+     *  DisplayLeft 记录组件的最左边
+     *  DisplayRight 记录组件的最右边
+     *  DisplayTop 记录组件的最上边
+     *  Display_Bottom 记录组件的最下边。
+     *  相对于 Android坐标系x 的位置
      **/
 
-    private int DisplayRight;
+    private int Screen_MAX_Hight,Screen_MAX_Width;
     /**
-     *   DisplayRight 记录组件的最右边相对于 Android坐标系x 的位置
-     **/
-    private int DisplayTop;
-    /**
-     *  DisplayTop 记录组件的最上边相对于 Android坐标系y 的位置
+     *   Screen_MAX_Hight 记录屏幕的最大长度
+     *   Screen_MAX_Width 记录屏幕的最大宽度
+     *   //确保组件不会超出屏幕
      **/
 
-    private int Display_Bottom;
+    private  int Move_X_Distance,Move_Y_Distance;
     /**
-     *   Display_Bottom 记录组件的最下边相对于 Android坐标系y 的位置
+     *   Move_X_Distance 移动距离X
+     *   Move_X_Distance 移动距离Y
+     *   （手指移动的距离-手指第一次点击组件记录的值）
      **/
-
-    private int Screen_MAX_Hight;
-    /**
-     *   Screen_MAX_Hight 记录屏幕的最大长度  //确保组件不会超出
-     **/
-    private int Screen_MAX_Width;
-    /**
-     *   Screen_MAX_Width 记录屏幕的最大宽度   //确保组件不会超出
-     **/
-
-    private  int Move_X_Distance;
-    /**
-     *   Move_X_Distance 移动距离X（手指移动的距离-手指第一次点击组件记录的值）
-     **/
-    private  int Move_Y_Distance;
-    /**
-     *   Move_X_Distance 移动距离Y（手指移动的距离-手指第一次点击组件记录的值）
-     **/
-
 
     public MovingView(Context context) {
         super(context);
@@ -163,7 +149,7 @@ public class MovingView extends ConstraintLayout {
                     DisplayTop = getTop() + Move_Y_Distance;
                     Display_Bottom = DisplayTop + View_Y_Hight;
 
-//                  limited_in_Max_Screen();  //限制组件范围，不超过屏幕
+//                  limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕
                     attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
                     ios_spring_pop();         //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
@@ -181,35 +167,44 @@ public class MovingView extends ConstraintLayout {
 
         return true;
     }
-    private  void limited_in_Max_Screen(){
-        if (DisplayLeft < 0) {  //如果移动超出了最左边，那么代表已经超出了屏幕尺寸
-            DisplayLeft = 0;   //重置移动的 X 距离为0
-            DisplayRight = DisplayLeft + View_X_Width;
 
-        }else if (DisplayRight>Screen_MAX_Width){  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
-            DisplayRight=Screen_MAX_Width;
-            DisplayLeft= DisplayRight-View_X_Width;
-        }
+    /**
+     * 普通限制位置是否在屏幕内活动
+     **/
+    private  void limited_in_Max_Screen(boolean limited_inner){
+        if(limited_inner) {  //如果是在边界内活动，则为true
+            if (DisplayLeft < 0) {  //如果移动超出了最左边，那么代表已经超出了屏幕尺寸
+                DisplayLeft = 0;   //重置移动的 X 距离为0
+                DisplayRight = DisplayLeft + View_X_Width;
 
-        if (DisplayTop < 0) {  //如果移动为负数，那么代表已经超出了屏幕尺寸
-            DisplayTop = 0;   //重置移动的 Y 距离为0
-            Display_Bottom = DisplayTop + View_Y_Hight;
-        }else if (Display_Bottom>Screen_MAX_Hight){
-            Display_Bottom=Screen_MAX_Hight;
-            DisplayTop=Display_Bottom-View_X_Width;
+            } else if (DisplayRight > Screen_MAX_Width) {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
+                DisplayRight = Screen_MAX_Width;
+                DisplayLeft = DisplayRight - View_X_Width;
+            }
+
+            if (DisplayTop < 0) {  //如果移动为负数，那么代表已经超出了屏幕尺寸
+                DisplayTop = 0;   //重置移动的 Y 距离为0
+                Display_Bottom = DisplayTop + View_Y_Hight;
+            } else if (Display_Bottom > Screen_MAX_Hight) {
+                Display_Bottom = Screen_MAX_Hight;
+                DisplayTop = Display_Bottom - View_X_Width;
+            }
         }
     }
 
-    private  void ios_spring_pop(){
+    /**
+     * ios弹簧方法
+     **/
+    private  void ios_spring_pop(){ //ios弹簧方法
 
-            if (DisplayLeft > (-slow * View_X_Width ) && DisplayLeft <= -inner) {  //超出屏幕，但是不超过组件自身slow*宽
+            if (DisplayLeft > (-sb_dist * View_X_Width ) && DisplayLeft <= -inner) {  //超出屏幕，但是不超过组件自身sb_dist*宽
                 DisplayLeft = (int)(getLeft() + (-1) * Math.sqrt(-1 * Move_X_Distance / 3));
                 DisplayRight = DisplayLeft + View_X_Width;
                 Log.e(TAG, "ios_spring_pop: 在规定的 内 外 边界内");
 
 
-            }else if (DisplayLeft<=(-slow * View_X_Width)) {
-                DisplayLeft = (int)(getLeft()-1.5);
+            }else if (DisplayLeft<=(-sb_dist * View_X_Width)) {
+                DisplayLeft = (int)(getLeft()-more_slow);
                 DisplayRight = DisplayLeft + View_X_Width;
                 Log.e(TAG, "ios_spring_pop: 超出规定的内 外 边界");
 
@@ -231,6 +226,9 @@ public class MovingView extends ConstraintLayout {
 
     }
 
+    /**
+     * 吸边方法
+     **/
     private void attach_boundary(){
         if(DisplayLeft<=inner&&DisplayLeft>=(-outside)){  //左边吸边效果
             DisplayLeft=0;
