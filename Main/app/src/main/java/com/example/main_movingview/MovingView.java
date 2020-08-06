@@ -150,7 +150,7 @@ public class MovingView extends ConstraintLayout {
                     Display_Bottom = DisplayTop + View_Y_Hight;
 
 //                  limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕
-                    attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
+//                    attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
                     ios_spring_pop();         //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
                     // 刷新组件位置，形成组件跟随手指移动的效果
@@ -210,23 +210,18 @@ public class MovingView extends ConstraintLayout {
 
 
             }
-            else if ((sb_dist*sb_dist * View_X_Width+Screen_MAX_Width )>DisplayRight && DisplayRight >= Screen_MAX_Width-inner)  {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
-                DisplayRight = (int)(Screen_MAX_Width+ Math.sqrt( Move_X_Distance / 3));
+            else if ((int)(20+View_X_Width+Screen_MAX_Width )>DisplayRight && DisplayRight >= Screen_MAX_Width-inner)  {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
+                DisplayRight = (int)(getRight()+ Math.sqrt( Math.abs(-1*Move_X_Distance / 3)));
                 DisplayLeft = DisplayRight - View_X_Width;
-                if(DisplayRight==0||DisplayLeft==0){
-                    Log.e(TAG, "报错:  "+DisplayRight+"   "+DisplayLeft );
-
-                }
-                Log.e(TAG, "ios_spring_pop: 右：在规定的 内 外 边界内");
+                Log.e(TAG, "ios_spring_pop: 右：在规定的 内 外 边界内   "+DisplayRight+"   "+DisplayLeft);
 
             }
-            else if (DisplayLeft>(sb_dist*sb_dist * View_X_Width+Screen_MAX_Width)) {
-                DisplayRight = (int)(Screen_MAX_Width+more_slow);
-                DisplayLeft = DisplayRight - View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 右：超出规定的内 外 边界");
-
-
-            }
+//            else if (DisplayRight>(sb_dist*sb_dist *sb_dist* View_X_Width+Screen_MAX_Width)) {
+//                DisplayRight = (int)(getRight()+more_slow);
+//                DisplayLeft = DisplayRight - View_X_Width;
+//                Log.e(TAG, "ios_spring_pop: 右：超出规定的内 外 边界  "+DisplayRight+"   "+DisplayLeft);
+//
+//            }
 
 
 
