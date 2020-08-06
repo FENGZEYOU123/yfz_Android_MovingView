@@ -16,65 +16,66 @@ public class MovingView extends ConstraintLayout {
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
     private WindowManager wm=null;
+    private boolean attach_boundary=true;
 
-    private int MovingView_X;
+    private int View_X_Width;
     /**
-     *  MovingView_X 记录组件的宽度
+     *  View_X_Width 记录组件的宽度
      **/
 
-    private int MovingView_Y;
+    private int View_Y_Hight;
     /**
-     *   MovingView_Y 记录组件的长度
+     *   View_Y_Hight 记录组件的长度
      **/
 
-    private float Finger_X;
+    private int Finger_X;
     /**
      *  Finger_X 记录点击时手指基于组件坐标系的位置 X
      **/
 
-    private float Finger_Y;
+    private int Finger_Y;
     /**
      *  Finger_Y 记录点击时手指基于组件坐标系的位置 Y
      **/
 
     //**************Android坐标系 是以屏幕左上角为(0,0)*******************//
-    private float MovingView_Left;
+    private int DisplayLeft;
     /**
-     *  MovingView_Left 记录组件的最左边相对于 Android坐标系x 的位置
+     *  DisplayLeft 记录组件的最左边相对于 Android坐标系x 的位置
      **/
 
-    private float MovingView_Right;
+    private int DisplayRight;
     /**
-     *   MovingView_Right 记录组件的最右边相对于 Android坐标系x 的位置
+     *   DisplayRight 记录组件的最右边相对于 Android坐标系x 的位置
      **/
-    private float MovingView_Top;
+    private int DisplayTop;
     /**
-     *  MovingView_Top 记录组件的最上边相对于 Android坐标系y 的位置
-     **/
-
-    private float MovingView_Bottom;
-    /**
-     *   MovingView_Bottom 记录组件的最下边相对于 Android坐标系y 的位置
+     *  DisplayTop 记录组件的最上边相对于 Android坐标系y 的位置
      **/
 
-    private float Screen_MAX_Height;
+    private int Display_Bottom;
     /**
-     *   Screen_MAX_Height 记录屏幕的最大长度  //确保组件不会超出
+     *   Display_Bottom 记录组件的最下边相对于 Android坐标系y 的位置
      **/
-    private float Screen_MAX_Width;
+
+    private int Screen_MAX_Hight;
+    /**
+     *   Screen_MAX_Hight 记录屏幕的最大长度  //确保组件不会超出
+     **/
+    private int Screen_MAX_Width;
     /**
      *   Screen_MAX_Width 记录屏幕的最大宽度   //确保组件不会超出
      **/
 
 
 
-    private float Move_X;
+    private  int Move_X_Distance;
     /**
-     *   Move_X 移动距离X（手指移动的距离-手指第一次点击组件记录的值）
+     *   Move_X_Distance 移动距离X（手指移动的距离-手指第一次点击组件记录的值）
      **/
-    private float Move_Y;
+    private  int Move_Y_Distance;
     /**
-     *   Move_X 移动距离Y（手指移动的距离-手指第一次点击组件记录的值）
+     *   Move_X_Distance 移动距离Y（手指移动的距离-手指第一次点击组件记录的值）
      **/
 
 
@@ -88,9 +89,9 @@ public class MovingView extends ConstraintLayout {
 
         wm= (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics( dm );
-        Screen_MAX_Height=dm.heightPixels;
+        Screen_MAX_Hight=dm.heightPixels;
         Screen_MAX_Width=dm.widthPixels;
-        Log.d(TAG, "Screen_MAX_Height 屏幕最大长度 "+Screen_MAX_Height);
+        Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
     }
     public MovingView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -101,10 +102,10 @@ public class MovingView extends ConstraintLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {  //拿到测量的组件值
-        MovingView_X=getMeasuredWidth();  //记录组件宽度
-        MovingView_Y=getMeasuredHeight();   //记录组件长度
-        Log.d(TAG, "MovingView_X 组件宽度 "+MovingView_X);
-        Log.d(TAG, "MovingView_Y 组件长度 "+MovingView_Y);
+        View_X_Width=getMeasuredWidth();  //记录组件宽度
+        View_Y_Hight=getMeasuredHeight();   //记录组件长度
+        Log.d(TAG, "View_X_Width 组件宽度 "+View_X_Width);
+        Log.d(TAG, "View_Y_Hight 组件长度 "+View_Y_Hight);
         Log.e(TAG, "-----------------------------------------");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -116,50 +117,115 @@ public class MovingView extends ConstraintLayout {
         int action=event.getAction();
         switch (action){
             case MotionEvent.ACTION_DOWN:   //当手指按下的时候，需要记录以下手指点击的位置相对于组件的坐标(以组件左上角计作(0,0))
-                Finger_X=event.getX();
-                Finger_Y=event.getY();
+                Finger_X=(int)event.getX();
+                Finger_Y=(int)event.getY();
                 Log.d(TAG, "Finger_X 手指点击相对组件宽度 "+Finger_X);
                 Log.d(TAG, "Finger_Y 手指点击相对组件长度 "+Finger_Y);
-
-                MovingView_Left=getLeft();
-                MovingView_Top=getTop();
-                MovingView_Right=getRight();
-                MovingView_Bottom=getBottom();
-
-                Log.d(TAG, "MovingView_Left 组件相对于 android位置 "+MovingView_Left);
-                Log.d(TAG, "MovingView_Right 组件相对于 android位置 "+MovingView_Right);
-                Log.d(TAG, "MovingView_Top 组件相对于 android位置 "+MovingView_Top);
-                Log.d(TAG, "MovingView_Bottom 组件相对于 android位置 "+MovingView_Bottom);
                 Log.e(TAG, "******************************************");
 
                 break;
 
             case MotionEvent.ACTION_MOVE:  //当手指开始移动的时候
-                //刷新组件位置，形成组件跟随手指移动的效果
-                Move_X=event.getX()-Finger_X;  //记录移动的距离X
-                Move_Y=event.getX()-Finger_Y;  //记录移动的距离Y
-                Log.d(TAG, "Move_X 移动距离为: "+Move_X);
-                Log.d(TAG, "Move_Y 移动距离为: "+Move_Y);
-                Log.e(TAG, "....................................");
-                if(Move_X<=0){  //如果移动为负数，那么代表已经超出了屏幕尺寸
-                    Move_X=0;   //重置移动的 X 距离为0
-                }
+                    //记录移动距离s
+                    Move_X_Distance = (int)event.getX() - Finger_X;  //记录移动的距离X
+                    Move_Y_Distance = (int)event.getY() - Finger_Y;  //记录移动的距离Y
+                    Log.d(TAG, "Move_X_Distance 移动距离为: " + Move_X_Distance);
+                    Log.d(TAG, "Move_Y_Distance 移动距离为: " + Move_Y_Distance);
+                    Log.e(TAG, "....................................");
 
-                if(Move_Y<=0){  //如果移动为负数，那么代表已经超出了屏幕尺寸
-                    Move_X=0;   //重置移动的 Y 距离为0
-                }
+                    //边界判断
+                    DisplayLeft = getLeft() + Move_X_Distance;
+                    DisplayRight = DisplayLeft + View_X_Width;
+                    DisplayTop = getTop() + Move_Y_Distance;
+                    Display_Bottom = DisplayTop + View_Y_Hight;
 
+//                  limited_in_Max_Screen();  //限制组件范围，不超过屏幕
+                attach_boundary();
+                    ios_spring_pop();  //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
+                // 刷新组件位置，形成组件跟随手指移动的效果
                 //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
-                this.layout((int)MovingView_Left,(int)MovingView_Top,(int)MovingView_Right,(int)MovingView_Bottom); //左，上，右，下
-                    break;
+                this.layout( DisplayLeft,  DisplayTop,  DisplayRight, Display_Bottom); //左，上，右，下
+
 
             case MotionEvent.ACTION_UP:  //当手指上抬起（停止触屏屏幕）
-                this.requestDisallowInterceptTouchEvent(false);  //取消自己消耗事件
+
                 break;
         }
 
 
+
         return true;
     }
+    private  void limited_in_Max_Screen(){
+        if (DisplayLeft < 0) {  //如果移动超出了最左边，那么代表已经超出了屏幕尺寸
+            DisplayLeft = 0;   //重置移动的 X 距离为0
+            DisplayRight = DisplayLeft + View_X_Width;
+
+        }else if (DisplayRight>Screen_MAX_Width){  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
+            DisplayRight=Screen_MAX_Width;
+            DisplayLeft= DisplayRight-View_X_Width;
+        }
+
+        if (DisplayTop < 0) {  //如果移动为负数，那么代表已经超出了屏幕尺寸
+            DisplayTop = 0;   //重置移动的 Y 距离为0
+            Display_Bottom = DisplayTop + View_Y_Hight;
+        }else if (Display_Bottom>Screen_MAX_Hight){
+            Display_Bottom=Screen_MAX_Hight;
+            DisplayTop=Display_Bottom-View_X_Width;
+        }
+    }
+
+    private  void ios_spring_pop(){
+
+            if (DisplayLeft > (-6 * View_X_Width / 10) && DisplayLeft <= -20) {  //超出屏幕，但是不超过组件自身3/4宽
+                DisplayLeft = (int)(getLeft() + (-1) * Math.sqrt(-1 * Move_X_Distance / 3));
+                DisplayRight = DisplayLeft + View_X_Width;
+
+            }else if (DisplayLeft<=(-6 * View_X_Width / 10)) {
+                DisplayLeft = (int)(getLeft()-1.5);
+                DisplayRight = DisplayLeft + View_X_Width;
+
+            } else if (DisplayRight > Screen_MAX_Width) {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
+                DisplayRight = Screen_MAX_Width;
+                DisplayLeft = DisplayRight - View_X_Width;
+            }
+
+
+
+            if (DisplayTop < 0) {  //如果移动为负数，那么代表已经超出了屏幕尺寸
+                DisplayTop = 0;   //重置移动的 Y 距离为0
+                Display_Bottom = DisplayTop + View_Y_Hight;
+            } else if (Display_Bottom > Screen_MAX_Hight) {
+                Display_Bottom = Screen_MAX_Hight;
+                DisplayTop = Display_Bottom - View_X_Width;
+            }
+
+    }
+
+    private void attach_boundary(){
+        if(DisplayLeft<=20&&DisplayLeft>=(-20)){  //左边吸边效果
+            DisplayLeft=0;
+            DisplayRight= DisplayLeft + View_X_Width;
+            Log.e(TAG, "ios_spring_pop: 监测到左边碰到边");
+            return;
+
+        }else if(Screen_MAX_Width+20>DisplayRight&&DisplayRight > Screen_MAX_Width-20){  //右边吸边效果
+            DisplayRight=Screen_MAX_Width;
+            DisplayLeft= DisplayRight - View_X_Width;
+            Log.e(TAG, "ios_spring_pop: 监测到右边碰到边");
+            return;
+        }
+
+        if (DisplayTop <=20&&DisplayTop>=(-20)) {   //上边吸边效果
+            DisplayTop = 0;   //重置移动的 Y 距离为0
+            Display_Bottom = DisplayTop + View_Y_Hight;
+        } else if (Screen_MAX_Width+20>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-20) {  //下边吸边效果
+            Display_Bottom = Screen_MAX_Hight;
+            DisplayTop = Display_Bottom - View_X_Width;
+        }
+
+
+    }
+
 }
