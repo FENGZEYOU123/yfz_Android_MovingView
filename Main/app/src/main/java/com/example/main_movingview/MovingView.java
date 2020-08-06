@@ -30,6 +30,20 @@ public class MovingView extends ConstraintLayout {
     private WindowManager wm=null;
     private boolean attach_boundary=true;
 
+
+    private int inner =20;
+    private int outside =40;
+
+    /**
+     *  吸附属性设置 inner屏幕内部吸附距离,outside屏幕外部吸附距离
+     **/
+
+    private double slow = 0.6;
+    /**
+     *  弹簧属性设置 slow放慢移动速度
+     **/
+
+
     private int View_X_Width;
     /**
      *  View_X_Width 记录组件的宽度
@@ -188,13 +202,17 @@ public class MovingView extends ConstraintLayout {
 
     private  void ios_spring_pop(){
 
-            if (DisplayLeft > (-6 * View_X_Width / 10) && DisplayLeft <= -20) {  //超出屏幕，但是不超过组件自身3/4宽
+            if (DisplayLeft > (-slow * View_X_Width ) && DisplayLeft <= -inner) {  //超出屏幕，但是不超过组件自身slow*宽
                 DisplayLeft = (int)(getLeft() + (-1) * Math.sqrt(-1 * Move_X_Distance / 3));
                 DisplayRight = DisplayLeft + View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 在规定的 内 外 边界内");
 
-            }else if (DisplayLeft<=(-6 * View_X_Width / 10)) {
+
+            }else if (DisplayLeft<=(-slow * View_X_Width)) {
                 DisplayLeft = (int)(getLeft()-1.5);
                 DisplayRight = DisplayLeft + View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 超出规定的内 外 边界");
+
 
             } else if (DisplayRight > Screen_MAX_Width) {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
                 DisplayRight = Screen_MAX_Width;
@@ -214,29 +232,29 @@ public class MovingView extends ConstraintLayout {
     }
 
     private void attach_boundary(){
-        if(DisplayLeft<=20&&DisplayLeft>=(-20)){  //左边吸边效果
+        if(DisplayLeft<=inner&&DisplayLeft>=(-outside)){  //左边吸边效果
             DisplayLeft=0;
             DisplayRight= DisplayLeft + View_X_Width;
-            Log.e(TAG, "ios_spring_pop: 监测到左边碰到边");
+            Log.e(TAG, "attach_boundary: 监测到左边碰到边");
             return;
 
-        }else if(Screen_MAX_Width+20>DisplayRight&&DisplayRight > Screen_MAX_Width-20){  //右边吸边效果
+        }else if(Screen_MAX_Width+outside>DisplayRight&&DisplayRight > Screen_MAX_Width-inner){  //右边吸边效果
             DisplayRight=Screen_MAX_Width;
             DisplayLeft= DisplayRight - View_X_Width;
-            Log.e(TAG, "ios_spring_pop: 监测到右边碰到边");
+            Log.e(TAG, "attach_boundary: 监测到右边碰到边");
             return;
         }
 
-        if (DisplayTop <=20&&DisplayTop>=(-20)) {   //上边吸边效果
+        if (DisplayTop <=inner&&DisplayTop>=(-outside)) {   //上边吸边效果
             DisplayTop = 0;
             Display_Bottom = DisplayTop + View_Y_Hight;
-            Log.e(TAG, "ios_spring_pop: 监测到上边碰到边");
+            Log.e(TAG, "attach_boundary: 监测到上边碰到边");
             return;
 
-        } else if (Screen_MAX_Hight+20>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-20) {  //下边吸边效果
+        } else if (Screen_MAX_Hight+outside>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-inner) {  //下边吸边效果
             Display_Bottom = Screen_MAX_Hight;
             DisplayTop = Display_Bottom - View_Y_Hight;
-            Log.e(TAG, "ios_spring_pop: 监测到下边碰到边");
+            Log.e(TAG, "attach_boundary: 监测到下边碰到边");
             return;
         }
 
