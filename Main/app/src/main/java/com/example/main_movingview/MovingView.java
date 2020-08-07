@@ -38,6 +38,7 @@ public class MovingView extends ConstraintLayout {
     private double inner =15;
     private double outside =15;
     private boolean attach_open =true;
+    private String move_Dir=null;
     /**
      *  ***吸附属性设置
      *  inner屏幕内部吸附距离
@@ -157,6 +158,9 @@ public class MovingView extends ConstraintLayout {
                     Display_Right = getRight() + Move_X_Distance;
                     Display_Top = getTop() + Move_Y_Distance;
                     Display_Bottom = getBottom() + Move_Y_Distance;
+
+                    //移动方向判断
+                    move_Dir=  Move_Direction(Move_X_Distance,Move_Y_Distance);
 
                     limited_in_Max_Screen(limited_open);  //限制组件范围，不超过屏幕
                     attach_boundary(attach_open);          //吸边 当组件靠近四边时会有吸附上去的效果
@@ -321,6 +325,34 @@ public class MovingView extends ConstraintLayout {
             }
 
         }
+
+    }
+
+
+    /**
+     * 判断移动的方向
+     **/
+    private String Move_Direction(double Move_X,double Move_Y){
+        String dir="";
+        if(Move_Y==0){
+            if(Move_X==0){
+                return dir;
+            }else{
+                dir=(Move_X<0)? "toWest":"toEast";
+            }
+        }else if (Move_X==0){
+            if(Move_Y==0){
+                return dir;
+            }else{
+                dir=(Move_Y<0)? "toNorth":"toSouth";
+            }
+        }
+            if(dir!="") {
+                Log.e(TAG, "**********Move_Direction 移动方向为： " + dir);
+            }
+
+
+        return dir;
 
     }
 
