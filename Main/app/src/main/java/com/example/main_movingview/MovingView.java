@@ -334,24 +334,25 @@ public class MovingView extends ConstraintLayout {
      **/
     private String Move_Direction(double Move_X,double Move_Y){
         String dir="";
-        if(Move_Y==0){
+        if(Move_Y==0){   //Y轴为0，那么肯定是在Y轴上移动
             if(Move_X==0){
                 return dir;
-            }else{
-                dir=(Move_X<0)? "toWest":"toEast";
-            }
-        }else if (Move_X==0){
+            }else{ dir=(Move_X<0)? "West":"East"; }
+        }else if (Move_X==0){  //X轴为0，那么肯定是在Y轴上移动
             if(Move_Y==0){
                 return dir;
-            }else{
-                dir=(Move_Y<0)? "toNorth":"toSouth";
+            }else{ dir=(Move_Y<0)? "North":"South"; }
+        }else if (Move_X!=0&&Move_Y!=0){   //如果都不为0，那么肯定是XY倾斜的移动
+            if(Move_X<0){
+                dir=(Move_Y<0)? "toWest_fromNorth":"toWest_fromSouth";
+            }else {
+                dir=(Move_Y<0)? "toNorth_fromEast":"toNorth_fromWest";
             }
         }
-            if(dir!="") {
-                Log.e(TAG, "**********Move_Direction 移动方向为： " + dir);
-            }
 
 
+
+            if(dir!="") { Log.e(TAG, "**********Move_Direction 移动方向为： " + dir); }
         return dir;
 
     }
