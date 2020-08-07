@@ -20,7 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
  *  功能介绍：可移动组件view，带有各种效果
  *
  *
- *      limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕. limited_innter 为true的话 则限制，否则自由移动
+ *      limited_in_Max_Screen(limited_open);  //限制组件范围，不超过屏幕. limited_open 为true的话 则限制，否则自由移动
  *      attach_boundary();          //吸边 当组件靠近四边时会有吸附上去的效果
  *      ios_spring_press();         //模仿ios动画-弹簧阻尼效果-压缩，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
  *      ios_spring_release();       //模仿ios动画-弹簧阻尼效果-释放，当组件在屏幕外，这时候抬起手指，则视为从弹簧压缩状态释放
@@ -37,6 +37,7 @@ public class MovingView extends ConstraintLayout {
 
     private double inner =15;
     private double outside =15;
+    private boolean attach_open =true;
     /**
      *  ***吸附属性设置
      *  inner屏幕内部吸附距离
@@ -44,14 +45,14 @@ public class MovingView extends ConstraintLayout {
      **/
 
     private double spring_dis = 15,more_slow=0.1;
-    private boolean spring_available=true;
+    private boolean spring_open=true;
     /**
      *  ***弹簧属性设置
      *  spring_left弹簧距离限制,数字越小，组件能够超出屏幕的距离越小，越早开始压缩
      *  more_slow移动到弹簧距离限制后，再次放慢移动速率
      **/
 
-    private boolean limited_innter = false;
+    private boolean limited_open = false;
     /**
      *  ***普通限制属性设置
      *  limited_innter是否限制view移动在屏幕内。true为限制，false为允许组件自由移出屏幕
@@ -157,9 +158,9 @@ public class MovingView extends ConstraintLayout {
                     Display_Top = getTop() + Move_Y_Distance;
                     Display_Bottom = getBottom() + Move_Y_Distance;
 
-                    limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕
-                    attach_boundary();          //吸边 当组件靠近四边时会有吸附上去的效果
-                    ios_spring_press();         //模仿ios动画-弹簧阻尼效果-压缩，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
+                    limited_in_Max_Screen(limited_open);  //限制组件范围，不超过屏幕
+                    attach_boundary(attach_open);          //吸边 当组件靠近四边时会有吸附上去的效果
+                    ios_spring_press(spring_open);         //模仿ios动画-弹簧阻尼效果-压缩，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
                     // 刷新组件位置，形成组件跟随手指移动的效果
                     //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
@@ -205,8 +206,8 @@ public class MovingView extends ConstraintLayout {
     /**
      * ios弹簧方法-压缩
      **/
-    private  void ios_spring_press(){ //ios弹簧方法-压缩
-        if(spring_available) {
+    private  void ios_spring_press(boolean spring_open){ //ios弹簧方法-压缩
+        if(spring_open) {
             if (getLeft() < 0) {  //左边小于spring_dis距离的时候，开始放慢向左移动速度
                 Display_Left = (double) (getLeft() + press_speed(more_slow, Move_X_Distance, getLeft()));
                 Display_Right = Display_Left + View_X_Width;
@@ -256,28 +257,28 @@ public class MovingView extends ConstraintLayout {
      **/
     private  void ios_spring_release(){ //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
-        while(spring_available&&(getLeft()<0||getTop()<0||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
+        while(spring_open&&(getLeft()<0||getTop()<0||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
             if (getLeft() < 0) {  //左边超出屏幕边界
                 Display_Left=getLeft()+1;
                 Display_Right=Display_Left+View_X_Width;
-                Log.d(TAG, "ios_spring_release: 释放左边");
+                Log.d(TAG, "ios_spring_release: 释放左边   "+getLeft());
 
             } else if (getRight()>Screen_MAX_Width) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
                Display_Right=Screen_MAX_Width-1;
                Display_Left=Display_Right-View_X_Width;
-                Log.d(TAG, "ios_spring_release: 释放右边");
+                Log.d(TAG, "ios_spring_release: 释放右边   "+getRight());
 
             }
 
             if (getTop() < 0) {  //左边超出屏幕边界
                 Display_Top=getTop()+1;
                 Display_Bottom=Display_Top+View_Y_Hight;
-                Log.d(TAG, "ios_spring_release: 释放上边");
+                Log.d(TAG, "ios_spring_release: 释放上边   "+getTop());
 
             } else if (getBottom()>Screen_MAX_Hight) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
                 Display_Bottom =Screen_MAX_Hight-1;
                 Display_Top=Display_Bottom-View_Y_Hight;
-                Log.d(TAG, "ios_spring_release: 释放下边");
+                Log.d(TAG, "ios_spring_release: 释放下边   "+getBottom());
 
             }
 
@@ -291,33 +292,35 @@ public class MovingView extends ConstraintLayout {
     /**
      * 吸边方法
      **/
-    private void attach_boundary(){
-        if(Display_Left<=inner&&Display_Left>0){  //左边吸边效果
-            Display_Left=0;
-            Display_Right= Display_Left + View_X_Width;
-            Log.d(TAG, "attach_boundary: 监测到左边碰到边");
-            return;
+    private void attach_boundary(boolean attach_open){
+        if(attach_open) {
+            if (Display_Left <= inner && Display_Left > 0) {  //左边吸边效果
+                Display_Left = 0;
+                Display_Right = Display_Left + View_X_Width;
+                Log.d(TAG, "attach_boundary: 监测到左边碰到边");
+                return;
 
-        }else if(Screen_MAX_Width>Display_Right&&Display_Right > Screen_MAX_Width-inner){  //右边吸边效果
-            Display_Right=Screen_MAX_Width;
-            Display_Left= Display_Right - View_X_Width;
-            Log.d(TAG, "attach_boundary: 监测到右边碰到边");
-            return;
+            } else if (Screen_MAX_Width > Display_Right && Display_Right > Screen_MAX_Width - inner) {  //右边吸边效果
+                Display_Right = Screen_MAX_Width;
+                Display_Left = Display_Right - View_X_Width;
+                Log.d(TAG, "attach_boundary: 监测到右边碰到边");
+                return;
+            }
+
+            if (Display_Top <= inner && Display_Top > 0) {   //上边吸边效果
+                Display_Top = 0;
+                Display_Bottom = Display_Top + View_Y_Hight;
+                Log.d(TAG, "attach_boundary: 监测到上边碰到边");
+                return;
+
+            } else if (Screen_MAX_Hight > Display_Bottom && Display_Bottom > Screen_MAX_Hight - inner) {  //下边吸边效果
+                Display_Bottom = Screen_MAX_Hight;
+                Display_Top = Display_Bottom - View_Y_Hight;
+                Log.d(TAG, "attach_boundary: 监测到下边碰到边");
+                return;
+            }
+
         }
-
-        if (Display_Top <=inner&&Display_Top>0) {   //上边吸边效果
-            Display_Top = 0;
-            Display_Bottom = Display_Top + View_Y_Hight;
-            Log.d(TAG, "attach_boundary: 监测到上边碰到边");
-            return;
-
-        } else if (Screen_MAX_Hight>Display_Bottom&&Display_Bottom > Screen_MAX_Hight-inner) {  //下边吸边效果
-            Display_Bottom = Screen_MAX_Hight;
-            Display_Top = Display_Bottom - View_Y_Hight;
-            Log.d(TAG, "attach_boundary: 监测到下边碰到边");
-            return;
-        }
-
 
     }
 
