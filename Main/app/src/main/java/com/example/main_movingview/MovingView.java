@@ -30,22 +30,22 @@ public class MovingView extends ConstraintLayout {
     private WindowManager wm=null;
 
 
-    private int inner =20;
-    private int outside =40;
+    private int inner =15;
+    private int outside =15;
     /**
      *  ***吸附属性设置
      *  inner屏幕内部吸附距离
      *  outside屏幕外部吸附距离
      **/
 
-    private double sb_dist = 0.5,more_slow=1.5;
+    private double spring_dis = 10,more_slow=0.1;
     /**
      *  ***弹簧属性设置
-     *  sb_dist弹簧距离限制,数字越小，组件能够超出屏幕的距离越小，越早开始压缩
+     *  spring_left弹簧距离限制,数字越小，组件能够超出屏幕的距离越小，越早开始压缩
      *  more_slow移动到弹簧距离限制后，再次放慢移动速率
      **/
 
-    private boolean limited_innter = true;
+    private boolean limited_innter = false;
     /**
      *  ***普通限制属性设置
      *  limited_innter是否限制view移动在屏幕内。true为限制，false为允许组件自由移出屏幕
@@ -145,12 +145,12 @@ public class MovingView extends ConstraintLayout {
 
                     //将要展示的组件的四个顶点位置
                     DisplayLeft = getLeft() + Move_X_Distance;
-                    DisplayRight = DisplayLeft + View_X_Width;
+                    DisplayRight = getRight() + Move_X_Distance;
                     DisplayTop = getTop() + Move_Y_Distance;
-                    Display_Bottom = DisplayTop + View_Y_Hight;
+                    Display_Bottom = getBottom() + Move_Y_Distance;
 
-//                  limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕
-//                    attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
+                    limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕
+                    attach_boundary();        //吸边 当组件靠近四边时会有吸附上去的效果
                     ios_spring_pop();         //模仿ios动画，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
 
                     // 刷新组件位置，形成组件跟随手指移动的效果
@@ -197,43 +197,49 @@ public class MovingView extends ConstraintLayout {
      **/
     private  void ios_spring_pop(){ //ios弹簧方法
 
-            if (DisplayLeft > (-sb_dist * View_X_Width ) && DisplayLeft <= -inner) {  //超出屏幕，但是不超过组件自身sb_dist*宽
-                DisplayLeft = (int)(getLeft() + (-1) * Math.sqrt(-1 * Move_X_Distance / 3));
-                DisplayRight = DisplayLeft + View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 左：在规定的 内 外 边界内");
+            if (getLeft()<-spring_dis ) {  //左边小于spring_dis距离的时候，开始放慢向左移动速度
+                DisplayLeft = (int)(getLeft()+press_speed(more_slow,Move_X_Distance,getLeft()) );
+                DisplayRight = DisplayLeft +View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 小于左边spring_dis距离的:getLeft()  "+getLeft());
 
-
-            }else if (DisplayLeft<=(-sb_dist * View_X_Width)) {
-                DisplayLeft = (int)(getLeft()-more_slow);
-                DisplayRight = DisplayLeft + View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 左：超出规定的内 外 边界");
-
+            } else if(getRight()>Screen_MAX_Width+spring_dis){  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
+                DisplayRight=(int)(getRight()+press_speed(more_slow,Move_X_Distance,getRight()));
+                DisplayLeft=DisplayRight-View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 小于右边spring_dis距离的:getRight()  "+getRight());
 
             }
-            else if ((int)(20+View_X_Width+Screen_MAX_Width )>DisplayRight && DisplayRight >= Screen_MAX_Width-inner)  {  //如果移动超出了最右边,那么代表已经超出了屏幕尺寸
-                DisplayRight = (int)(getRight()+ Math.sqrt( Math.abs(-1*Move_X_Distance / 3)));
-                DisplayLeft = DisplayRight - View_X_Width;
-                Log.e(TAG, "ios_spring_pop: 右：在规定的 内 外 边界内   "+DisplayRight+"   "+DisplayLeft);
-
-            }
-//            else if (DisplayRight>(sb_dist*sb_dist *sb_dist* View_X_Width+Screen_MAX_Width)) {
-//                DisplayRight = (int)(getRight()+more_slow);
-//                DisplayLeft = DisplayRight - View_X_Width;
-//                Log.e(TAG, "ios_spring_pop: 右：超出规定的内 外 边界  "+DisplayRight+"   "+DisplayLeft);
-//
-//            }
 
 
 
-            if (DisplayTop < 0) {  //如果移动为负数，那么代表已经超出了屏幕尺寸
-                DisplayTop = 0;   //重置移动的 Y 距离为0
+            if (getTop()<-spring_dis) {  //上边小于spring_dis距离的时候，开始放慢向上移动速度
+                DisplayTop = (int)(getTop()+press_speed(more_slow,Move_Y_Distance,getTop())) ;
                 Display_Bottom = DisplayTop + View_Y_Hight;
-            } else if (Display_Bottom > Screen_MAX_Hight) {
-                Display_Bottom = Screen_MAX_Hight;
-                DisplayTop = Display_Bottom - View_X_Width;
+                Log.e(TAG, "ios_spring_pop: 小于上边spring_dis距离的:getTop()  "+getTop());
+
+            } else if (getBottom()>Screen_MAX_Hight+spring_dis) {
+                Display_Bottom=(int)(getBottom()+press_speed(more_slow,Move_Y_Distance,getBottom()));
+                DisplayTop=Display_Bottom-View_Y_Hight;
+                Log.e(TAG, "ios_spring_pop: 小于下边spring_dis距离的:getBottom()  "+getBottom());
+
             }
 
     }
+
+    //放慢速率随着组件view，超出屏幕范围越多越慢
+    private double  press_speed(double more_slow,int Move_X_Distance,double get_view){
+        double speed=0.0;
+        if(get_view<0) {
+            speed = 0.2*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view)));
+            Log.d(TAG, "press_speed: DisplayLeft" + "  " + Move_X_Distance+"     "+(double)(Math.sqrt(Math.abs(get_view))));
+        }else{
+            speed = 0.2*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width)) );
+            Log.d(TAG, "press_speed: DisplayRight" + "  " + Move_X_Distance+"   "+(double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width))));
+
+
+        }
+        return speed ;
+    }
+
 
     /**
      * 吸边方法
