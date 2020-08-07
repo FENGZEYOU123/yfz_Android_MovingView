@@ -17,9 +17,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
  *  开始日期：2020年7月13日
  *  最后更新日期：2020年8月6日
  *
- *  功能介绍：
+ *  功能介绍：可移动组件view，带有各种效果
  *
  *
+ *      limited_in_Max_Screen(limited_innter);  //限制组件范围，不超过屏幕. limited_innter 为true的话 则限制，否则自由移动
+ *      attach_boundary();          //吸边 当组件靠近四边时会有吸附上去的效果
+ *      ios_spring_press();         //模仿ios动画-弹簧阻尼效果-压缩，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
+ *      ios_spring_release();       //模仿ios动画-弹簧阻尼效果-释放，当组件在屏幕外，这时候抬起手指，则视为从弹簧压缩状态释放
  *
  *
  *
