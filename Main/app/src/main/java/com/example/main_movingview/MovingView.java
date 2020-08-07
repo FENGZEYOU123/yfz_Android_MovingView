@@ -175,6 +175,20 @@ public class MovingView extends ConstraintLayout {
 
             case MotionEvent.ACTION_UP:  //当手指上抬起（停止触屏屏幕）
                 Log.e(TAG, "onTouchEvent: ACTION_UP 抬手 ");
+
+                    if (getLeft() < 0) {  //记录W超出
+                        popup_W(getLeft());
+                    } else  if (getRight()>Screen_MAX_Width){
+                        popup_W(getRight());
+                    }
+
+                    if (getTop() < 0) {   //记录H超出
+                        popup_H(getTop());
+                    } else if (getBottom()>Screen_MAX_Hight){
+                        popup_H(getBottom());
+                    }
+
+
                 ios_spring_release();    //模仿ios动画-弹簧阻尼效果-释放，当组件在屏幕外，这时候抬起手指，则视为从弹簧压缩状态释放
 
                 break;
@@ -238,6 +252,9 @@ public class MovingView extends ConstraintLayout {
                 Log.d(TAG, "ios_spring_press: 小于下边spring_dis距离的:getBottom()  " + getBottom());
 
             }
+
+//           getLeft()<0: popup_W(Display_Left);
+//            popup_H(Display_Top);
         }
     }
 
@@ -256,18 +273,36 @@ public class MovingView extends ConstraintLayout {
         return speed ;
     }
 
-    //记录一下组件view超出边界的长度
-    private double  popup_D(){
-        double Distance=0.0;
-
-        return Distance ;
+    //记录一下组件view超出边界的W
+    private double popup_W(double Dis_W){
+        double W=0.0;
+        if(Dis_W<Screen_MAX_Width){
+            W= Math.abs(Dis_W);
+        }else{
+            W= Math.abs(Dis_W-Screen_MAX_Width);
+        }
+        Log.d(TAG, "press_speed: 储存的W为   "+W  );
+        return W ;
     }
+    //记录一下组件view超出边界的H
+    private double popup_H(double Dis_H){
+        double H=0.0;
+        if(Dis_H<Screen_MAX_Hight){
+        H= Math.abs(Dis_H);
+        }else{
+            H= Math.abs(Dis_H-Screen_MAX_Hight);
+
+        }
+        Log.d(TAG, "press_speed: 储存的H为   "+H );
+        return H ;
+    }
+
 
 
     /**
      * ios弹簧方法-释放
      **/
-    private  void ios_spring_release(double popup_D){ //ios弹簧方法-释放
+    private  void ios_spring_release(){ //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
         while(spring_open&&(getLeft()<0||getTop()<0||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
             if (getLeft() < 0) {  //左边超出屏幕边界
