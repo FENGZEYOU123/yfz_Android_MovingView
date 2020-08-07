@@ -306,21 +306,13 @@ public class MovingView extends ConstraintLayout {
     /**
      * ios弹簧方法-释放
      **/
-    private  void ios_spring_release(double popup_W, double popup_H){ //ios弹簧方法-释放
+    private  void ios_spring_release(final double popup_W, final double popup_H){ //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
 
-//        timer.schedule(new TimerTask() {
-//
-//            @Override
-//            public void run() {
-//                // TODO Auto-generated method stub
-//            }
-//
-//        }, 100);
 
         while(spring_open_release&&(getLeft()<popup_W||getTop()<popup_H||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
             if (getLeft() < popup_W) {  //左边超出屏幕边界
-                Display_Left=getLeft()+1;
+                Display_Left=getLeft()+popup_W;
                 Display_Right=Display_Left+View_X_Width;
                 Log.d(TAG, "ios_spring_release: 释放左边   "+getLeft()+"   "+popup_W);
 
@@ -332,7 +324,7 @@ public class MovingView extends ConstraintLayout {
             }
 
             if (getTop() < popup_H) {  //左边超出屏幕边界
-                Display_Top=getTop()+1;
+                Display_Top=getTop()+popup_W;
                 Display_Bottom=Display_Top+View_Y_Hight;
                 Log.d(TAG, "ios_spring_release: 释放上边   "+getTop());
 
@@ -347,7 +339,7 @@ public class MovingView extends ConstraintLayout {
 
         }
 
-    }
+            }
 
 
     /**
