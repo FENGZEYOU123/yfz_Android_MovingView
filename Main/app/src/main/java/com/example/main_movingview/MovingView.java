@@ -346,7 +346,7 @@ public class MovingView extends ConstraintLayout {
             if(Move_X<0){
                 dir=(Move_Y<0)? "toWest_fromNorth":"toWest_fromSouth"; //左上，左下
             }else {
-                dir=(Move_Y<0)? "toNorth_fromEast":"toNorth_fromWest"; //右上，右下
+                dir=(Move_Y<0)? "toEast_fromNorth":"toEast_fromSouth"; //右上，右下
             }
         }
 
