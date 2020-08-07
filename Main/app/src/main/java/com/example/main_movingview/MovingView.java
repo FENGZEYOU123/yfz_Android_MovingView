@@ -312,7 +312,7 @@ public class MovingView extends ConstraintLayout {
 
         while(spring_open_release&&(getLeft()<popup_W||getTop()<popup_H||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
             if (getLeft() < popup_W) {  //左边超出屏幕边界
-                Display_Left=getLeft()+popup_W;
+                Display_Left=getLeft()+1;
                 Display_Right=Display_Left+View_X_Width;
                 Log.d(TAG, "ios_spring_release: 释放左边   "+getLeft()+"   "+popup_W);
 
@@ -324,7 +324,7 @@ public class MovingView extends ConstraintLayout {
             }
 
             if (getTop() < popup_H) {  //左边超出屏幕边界
-                Display_Top=getTop()+popup_W;
+                Display_Top=getTop()+1;
                 Display_Bottom=Display_Top+View_Y_Hight;
                 Log.d(TAG, "ios_spring_release: 释放上边   "+getTop());
 
