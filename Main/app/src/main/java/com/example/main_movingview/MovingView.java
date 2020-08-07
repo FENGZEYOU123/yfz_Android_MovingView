@@ -344,9 +344,9 @@ public class MovingView extends ConstraintLayout {
             }else{ dir=(Move_Y<0)? "North":"South"; }
         }else if (Move_X!=0&&Move_Y!=0){   //如果都不为0，那么肯定是XY倾斜的移动
             if(Move_X<0){
-                dir=(Move_Y<0)? "toWest_fromNorth":"toWest_fromSouth";
+                dir=(Move_Y<0)? "toWest_fromNorth":"toWest_fromSouth"; //左上，左下
             }else {
-                dir=(Move_Y<0)? "toNorth_fromEast":"toNorth_fromWest";
+                dir=(Move_Y<0)? "toNorth_fromEast":"toNorth_fromWest"; //右上，右下
             }
         }
 
