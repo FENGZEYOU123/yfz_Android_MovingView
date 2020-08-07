@@ -35,8 +35,8 @@ public class MovingView extends ConstraintLayout {
     private WindowManager wm=null;
 
 
-    private int inner =15;
-    private int outside =15;
+    private double inner =15;
+    private double outside =15;
     /**
      *  ***吸附属性设置
      *  inner屏幕内部吸附距离
@@ -57,7 +57,7 @@ public class MovingView extends ConstraintLayout {
      *  limited_innter是否限制view移动在屏幕内。true为限制，false为允许组件自由移出屏幕
      **/
 
-    private int View_X_Width, View_Y_Hight;
+    private double View_X_Width, View_Y_Hight;
     /**
      *  View_X_Width 记录组件的宽度
      *  View_Y_Hight 记录组件的长度
@@ -65,14 +65,14 @@ public class MovingView extends ConstraintLayout {
 
     //**************组件坐标系, 是以当前触摸组件左上角为(0,0)*******************//
 
-    private int Finger_X,Finger_Y;
+    private double Finger_X,Finger_Y;
     /**
      *  Finger_X 记录点击时手指基于组件坐标系的位置 X
      *  Finger_Y 记录点击时手指基于组件坐标系的位置 Y
      **/
 
     //**************Android坐标系 是以屏幕左上角为(0,0)*******************//
-    private int Display_Left,Display_Right,Display_Top,Display_Bottom;
+    private double Display_Left,Display_Right,Display_Top,Display_Bottom;
     /**
      *  Display_Left 记录组件的最左边
      *  Display_Right 记录组件的最右边
@@ -81,14 +81,14 @@ public class MovingView extends ConstraintLayout {
      *  相对于 Android坐标系x 的位置
      **/
 
-    private int Screen_MAX_Hight,Screen_MAX_Width;
+    private double Screen_MAX_Hight,Screen_MAX_Width;
     /**
      *   Screen_MAX_Hight 记录屏幕的最大长度
      *   Screen_MAX_Width 记录屏幕的最大宽度
      *   //确保组件不会超出屏幕
      **/
 
-    private  int Move_X_Distance,Move_Y_Distance;
+    private  double Move_X_Distance,Move_Y_Distance;
     /**
      *   Move_X_Distance 移动距离X
      *   Move_X_Distance 移动距离Y
@@ -133,8 +133,8 @@ public class MovingView extends ConstraintLayout {
         int action=event.getAction();
         switch (action){
             case MotionEvent.ACTION_DOWN:   //当手指按下的时候，需要记录以下手指点击的位置相对于组件的坐标(以组件左上角计作(0,0))
-                Finger_X=(int)event.getX();
-                Finger_Y=(int)event.getY();
+                Finger_X=(double)event.getX();
+                Finger_Y=(double)event.getY();
                 Log.d(TAG, "Finger_X 手指点击相对组件宽度 "+Finger_X);
                 Log.d(TAG, "Finger_Y 手指点击相对组件长度 "+Finger_Y);
                 Log.e(TAG, "******************************************");
@@ -145,8 +145,8 @@ public class MovingView extends ConstraintLayout {
 //                Log.e(TAG, "onTouchEvent: ACTION_MOVE 移动 ");
 
                 //记录移动距离
-                    Move_X_Distance = (int)event.getX() - Finger_X;  //记录移动的距离X
-                    Move_Y_Distance = (int)event.getY() - Finger_Y;  //记录移动的距离Y
+                    Move_X_Distance = (double)event.getX() - Finger_X;  //记录移动的距离X
+                    Move_Y_Distance = (double)event.getY() - Finger_Y;  //记录移动的距离Y
                     Log.d(TAG, "Move_X_Distance 移动距离为: " + Move_X_Distance);
                     Log.d(TAG, "Move_Y_Distance 移动距离为: " + Move_Y_Distance);
                     Log.e(TAG, "....................................");
@@ -163,7 +163,7 @@ public class MovingView extends ConstraintLayout {
 
                     // 刷新组件位置，形成组件跟随手指移动的效果
                     //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
-                    this.layout( Display_Left,  Display_Top,  Display_Right, Display_Bottom); //左，上，右，下
+                    this.layout( (int)Display_Left,  (int)Display_Top,  (int)Display_Right, (int)Display_Bottom); //左，上，右，下
             break;
 
             case MotionEvent.ACTION_UP:  //当手指上抬起（停止触屏屏幕）
@@ -208,12 +208,12 @@ public class MovingView extends ConstraintLayout {
     private  void ios_spring_press(){ //ios弹簧方法-压缩
         if(spring_available) {
             if (getLeft() < -spring_dis) {  //左边小于spring_dis距离的时候，开始放慢向左移动速度
-                Display_Left = (int) (getLeft() + press_speed(more_slow, Move_X_Distance, getLeft()));
+                Display_Left = (double) (getLeft() + press_speed(more_slow, Move_X_Distance, getLeft()));
                 Display_Right = Display_Left + View_X_Width;
                 Log.d(TAG, "ios_spring_press: 小于左边spring_dis距离的:getLeft()  " + getLeft());
 
             } else if (getRight() > Screen_MAX_Width + spring_dis) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
-                Display_Right = (int) (getRight() + press_speed(more_slow, Move_X_Distance, getRight()));
+                Display_Right = (double) (getRight() + press_speed(more_slow, Move_X_Distance, getRight()));
                 Display_Left = Display_Right - View_X_Width;
                 Log.d(TAG, "ios_spring_press: 小于右边spring_dis距离的:getRight()  " + getRight());
 
@@ -221,12 +221,12 @@ public class MovingView extends ConstraintLayout {
 
 
             if (getTop() < -spring_dis) {  //上边小于spring_dis距离的时候，开始放慢向上移动速度
-                Display_Top = (int) (getTop() + press_speed(more_slow, Move_Y_Distance, getTop()));
+                Display_Top = (double) (getTop() + press_speed(more_slow, Move_Y_Distance, getTop()));
                 Display_Bottom = Display_Top + View_Y_Hight;
                 Log.d(TAG, "ios_spring_press: 小于上边spring_dis距离的:getTop()  " + getTop());
 
             } else if (getBottom() > Screen_MAX_Hight + spring_dis) {
-                Display_Bottom = (int) (getBottom() + press_speed(more_slow, Move_Y_Distance, getBottom()));
+                Display_Bottom = (double) (getBottom() + press_speed(more_slow, Move_Y_Distance, getBottom()));
                 Display_Top = Display_Bottom - View_Y_Hight;
                 Log.d(TAG, "ios_spring_press: 小于下边spring_dis距离的:getBottom()  " + getBottom());
 
@@ -235,7 +235,7 @@ public class MovingView extends ConstraintLayout {
     }
 
     //放慢速率随着组件view，超出屏幕边界越多越慢
-    private double  press_speed(double more_slow,int Move_X_Distance,double get_view){
+    private double  press_speed(double more_slow,double Move_X_Distance,double get_view){
         double speed=0.0;
         if(get_view<0) {
             speed = 0.2*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view)));
@@ -281,7 +281,7 @@ public class MovingView extends ConstraintLayout {
 
             }
 
-            this.layout( Display_Left,  Display_Top,  Display_Right, Display_Bottom); //左，上，右，下
+            this.layout( (int)Display_Left,  (int)Display_Top,  (int)Display_Right, (int)Display_Bottom); //左，上，右，下
 
         }
 
