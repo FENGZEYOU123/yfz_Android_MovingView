@@ -47,10 +47,12 @@ public class MovingView extends ConstraintLayout {
 
     private double spring_dis = 15,more_slow=0.1;
     private boolean spring_open=true;
+    private double popup_D=0.0;
     /**
      *  ***弹簧属性设置
      *  spring_left弹簧距离限制,数字越小，组件能够超出屏幕的距离越小，越早开始压缩
      *  more_slow移动到弹簧距离限制后，再次放慢移动速率
+     *  popup_D弹簧释放release后弹起的高度，跟组件超出屏幕边界多少有关， popup高度为其超出的1/2
      **/
 
     private boolean limited_open = false;
@@ -243,10 +245,10 @@ public class MovingView extends ConstraintLayout {
     private double  press_speed(double more_slow,double Move_X_Distance,double get_view){
         double speed=0.0;
         if(get_view<0) {
-            speed = 0.2*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view)));
+            speed = 0.1*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view)));
             Log.d(TAG, "press_speed: Display_Left" + "  " + Move_X_Distance+"     "+(double)(Math.sqrt(Math.abs(get_view))));
         }else{
-            speed = 0.2*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width)) );
+            speed = 0.1*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width)) );
             Log.d(TAG, "press_speed: Display_Right" + "  " + Move_X_Distance+"   "+(double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width))));
 
 
@@ -254,12 +256,18 @@ public class MovingView extends ConstraintLayout {
         return speed ;
     }
 
+    //记录一下组件view超出边界的长度
+    private double  popup_D(){
+        double Distance=0.0;
+
+        return Distance ;
+    }
 
 
     /**
      * ios弹簧方法-释放
      **/
-    private  void ios_spring_release(){ //ios弹簧方法-释放
+    private  void ios_spring_release(double popup_D){ //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
         while(spring_open&&(getLeft()<0||getTop()<0||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
             if (getLeft() < 0) {  //左边超出屏幕边界
