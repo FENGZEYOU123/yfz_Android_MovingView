@@ -51,7 +51,7 @@ public class MovingView extends ConstraintLayout {
      *  outside屏幕外部吸附距离
      **/
 
-    private double spring_dis = 15,more_slow=0.1;
+    private double spring_dis = 10,more_slow=0.1;
     private boolean spring_open_press=true,spring_open_release=true,spring_open_release_popup=true;
     private double popup_W=0.0,popup_H=0.0,popup_rate=0.5;
     /**
@@ -306,41 +306,40 @@ public class MovingView extends ConstraintLayout {
     /**
      * ios弹簧方法-释放
      **/
-    private  void ios_spring_release(final double popup_W, final double popup_H){ //ios弹簧方法-释放
+    private  void ios_spring_release(final double popup_W, final double popup_H) { //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
+        if (getLeft() < -spring_dis || getRight() > Screen_MAX_Width + spring_dis || getTop() < -spring_dis || getBottom() > Screen_MAX_Hight + spring_dis) {
+            while (spring_open_release && (getLeft() < popup_W || getTop() < popup_H || getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight)) {
+                if (getLeft() < popup_W) {  //左边超出屏幕边界
+                    Display_Left = getLeft() + 1;
+                    Display_Right = Display_Left + View_X_Width;
+                    Log.d(TAG, "ios_spring_release: 释放左边   " + getLeft() + "   " + popup_W);
 
+                } else if (getRight() > Screen_MAX_Width) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
+                    Display_Right = Screen_MAX_Width - popup_W;
+                    Display_Left = Display_Right - View_X_Width;
+                    Log.d(TAG, "ios_spring_release: 释放右边   " + getRight());
 
-        while(spring_open_release&&(getLeft()<popup_W||getTop()<popup_H||getRight()>Screen_MAX_Width||getBottom()>Screen_MAX_Hight)) {
-            if (getLeft() < popup_W) {  //左边超出屏幕边界
-                Display_Left=getLeft()+1;
-                Display_Right=Display_Left+View_X_Width;
-                Log.d(TAG, "ios_spring_release: 释放左边   "+getLeft()+"   "+popup_W);
+                }
 
-            } else if (getRight()>Screen_MAX_Width) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
-               Display_Right=Screen_MAX_Width-popup_W;
-               Display_Left=Display_Right-View_X_Width;
-                Log.d(TAG, "ios_spring_release: 释放右边   "+getRight());
+                if (getTop() < popup_H) {  //左边超出屏幕边界
+                    Display_Top = getTop() + 1;
+                    Display_Bottom = Display_Top + View_Y_Hight;
+                    Log.d(TAG, "ios_spring_release: 释放上边   " + getTop());
+
+                } else if (getBottom() > Screen_MAX_Hight) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
+                    Display_Bottom = Screen_MAX_Hight - popup_H;
+                    Display_Top = Display_Bottom - View_Y_Hight;
+                    Log.d(TAG, "ios_spring_release: 释放下边   " + getBottom());
+
+                }
+
+                this.layout((int) Display_Left, (int) Display_Top, (int) Display_Right, (int) Display_Bottom); //左，上，右，下
 
             }
-
-            if (getTop() < popup_H) {  //左边超出屏幕边界
-                Display_Top=getTop()+1;
-                Display_Bottom=Display_Top+View_Y_Hight;
-                Log.d(TAG, "ios_spring_release: 释放上边   "+getTop());
-
-            } else if (getBottom()>Screen_MAX_Hight) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
-                Display_Bottom =Screen_MAX_Hight-popup_H;
-                Display_Top=Display_Bottom-View_Y_Hight;
-                Log.d(TAG, "ios_spring_release: 释放下边   "+getBottom());
-
-            }
-
-            this.layout( (int)Display_Left,  (int)Display_Top,  (int)Display_Right, (int)Display_Bottom); //左，上，右，下
 
         }
-
-            }
-
+    }
 
     /**
      * 吸边方法
