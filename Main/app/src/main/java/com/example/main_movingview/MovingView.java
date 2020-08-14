@@ -1,5 +1,6 @@
 package com.example.main_movingview;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -8,6 +9,9 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -309,38 +313,43 @@ public class MovingView extends ConstraintLayout {
     private  void ios_spring_release(final double popup_W, final double popup_H) { //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
         if (getLeft() < -spring_dis || getRight() > Screen_MAX_Width + spring_dis || getTop() < -spring_dis || getBottom() > Screen_MAX_Hight + spring_dis) {
-            while (spring_open_release && (getLeft() < popup_W || getTop() < popup_H || getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight)) {
-                if (getLeft() < popup_W) {  //左边超出屏幕边界
-                    Display_Left = getLeft() + 1;
-                    Display_Right = Display_Left + View_X_Width;
-                    Log.d(TAG, "ios_spring_release: 释放左边   " + getLeft() + "   " + popup_W);
+            if (spring_open_release && (getLeft() < popup_W || getTop() < popup_H || getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight)) {
+                Log.d(TAG, "恢复原来位置  popup_W"+popup_W+"    popup_H"+popup_H);
 
-                } else if (getRight() > Screen_MAX_Width) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
-                    Display_Right = Screen_MAX_Width - popup_W;
-                    Display_Left = Display_Right - View_X_Width;
-                    Log.d(TAG, "ios_spring_release: 释放右边   " + getRight());
+                TranslateAnimation transAnim = new TranslateAnimation(0, (int)(popup_W*3), 0, (int)popup_H*3);
+                transAnim.setDuration(300);
+//              transAnim.setFillAfter(true);
+                transAnim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                }
+                    }
 
-                if (getTop() < popup_H) {  //左边超出屏幕边界
-                    Display_Top = getTop() + 1;
-                    Display_Bottom = Display_Top + View_Y_Hight;
-                    Log.d(TAG, "ios_spring_release: 释放上边   " + getTop());
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        updateParams();
+                    }
 
-                } else if (getBottom() > Screen_MAX_Hight) {  //右边大于spring_dis+Screen距离的时候，开始放慢向右移动速度
-                    Display_Bottom = Screen_MAX_Hight - popup_H;
-                    Display_Top = Display_Bottom - View_Y_Hight;
-                    Log.d(TAG, "ios_spring_release: 释放下边   " + getBottom());
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
-                }
-
-                this.layout((int) Display_Left, (int) Display_Top, (int) Display_Right, (int) Display_Bottom); //左，上，右，下
+                    }
+                });
+                this.startAnimation(transAnim);
 
             }
 
         }
     }
+    private void updateParams(){
+        this.clearAnimation();
+        this.layout((int)0,getTop(),(int)(View_X_Width+popup_W*2),(int)(getTop()+View_Y_Hight));
 
+//        TranslateAnimation transAnim = new TranslateAnimation(200, -100, 0, 0);
+//        transAnim.setDuration(300);
+//        this.startAnimation(transAnim);
+
+    }
     /**
      * 吸边方法
      **/
