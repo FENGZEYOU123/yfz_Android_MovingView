@@ -312,7 +312,7 @@ public class MovingView extends ConstraintLayout {
      **/
     private  void ios_spring_release(final double popup_W, final double popup_H) { //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
-        if (getLeft() < -spring_dis || getRight() > Screen_MAX_Width + spring_dis || getTop() < -spring_dis || getBottom() > Screen_MAX_Hight + spring_dis) {
+
             if (spring_open_release && (getLeft() < popup_W || getTop() < popup_H || getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight)) {
                 Log.d(TAG, "恢复原来位置  popup_W"+popup_W+"    popup_H"+popup_H);
 
@@ -339,7 +339,7 @@ public class MovingView extends ConstraintLayout {
 
             }
 
-        }
+
     }
     private void updateParams(){
         this.clearAnimation();
