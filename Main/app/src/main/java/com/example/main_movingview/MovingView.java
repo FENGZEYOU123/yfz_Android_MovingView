@@ -316,51 +316,50 @@ public class MovingView extends ConstraintLayout {
     private  void ios_spring_release(final double popup_W, final double popup_H) { //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
             if(spring_open_release) {  //如果开启此功能的话
-
-                if (getLeft() < popup_W ) {
-                    toX= (int) (-1*popup_W * 3);
-                    layout_left=0;
-                    layout_top=getTop();
-                    layout_right=(int)(View_X_Width+popup_W*2);
-                    layout_bottom=(int)(getTop()+View_Y_Hight);
-                    animation();
-                    Log.d(TAG, "ios_spring_release: 左边释放弹出>>>> "+toX);
-
-                }else if(getRight()>Screen_MAX_Width){
-                    toX= (int) ((-1*popup_W * 3));
-                    layout_top=getTop();
-                    layout_left=(int)(Screen_MAX_Width-View_X_Width);
-                    layout_right=(int)(Screen_MAX_Width);
-                    layout_bottom=(int)(getTop()+View_Y_Hight);
-
-                    animation();
-                    Log.d(TAG, "ios_spring_release: 右边释放弹出>>>> "+toX);
-                }
-
-
-
-
-//                if(getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight){
-//                    TranslateAnimation transAnim = new TranslateAnimation(0, (int)(Screen_MAX_Width+(-1* (popup_W * 3))), 0, (int)(Screen_MAX_Hight+(-1* (popup_W * 3))));
-//                    transAnim.setDuration(300);
-//                    transAnim.setAnimationListener(new Animation.AnimationListener() {
-//                        @Override
-//                        public void onAnimationStart(Animation animation) {
+                  if(getLeft()<popup_W||getRight()>Screen_MAX_Width||getTop()<popup_H||getBottom()>Screen_MAX_Hight) {
+                      if (getLeft() < popup_W) {
+                          toX = (int) (-1 * popup_W * 3);
+                          layout_left = 0;
+                          layout_top = getTop();
+                          layout_right = (int) (View_X_Width + layout_left);
+                          layout_bottom = (int) (getTop() + View_Y_Hight);
 //
-//                        }
-//
-//                        @Override
-//                        public void onAnimationEnd(Animation animation) {
-//                            updateover_Params();
-//                        }
-//
-//                        @Override
-//                        public void onAnimationRepeat(Animation animation) {
-//
-//                        }
-//                    });
-//                    this.startAnimation(transAnim);
-//                }
+                          Log.d(TAG, "ios_spring_release: 左边释放弹出>>>> " + toX + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
+
+                      } else if (getRight() > Screen_MAX_Width) {
+                          toX = (int) ((-1 * popup_W * 3));
+                          layout_top = getTop();
+                          layout_left = (int) (Screen_MAX_Width - View_X_Width);
+                          layout_right = (int) (Screen_MAX_Width);
+                          layout_bottom = (int) (getTop() + View_Y_Hight);
+                          Log.d(TAG, "ios_spring_release: 右边释放弹出>>>> " + toX + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
+
+                      }
+
+
+                      if (getTop() < popup_H) {
+                          toY = (int) (-1 * popup_H * 3);
+                          layout_left=getLeft();
+                          layout_right=(int)(layout_left+View_X_Width);
+                          layout_top = 0;
+                          layout_bottom = (int) (layout_top + View_Y_Hight);
+                          Log.d(TAG, "ios_spring_release: 上边释放弹出>>>> " + toY + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
+
+                      } else if (getBottom() > Screen_MAX_Hight) {
+
+                          toY = (int) (-1 * popup_H * 3);
+                          layout_left=getLeft();
+                          layout_right=(int)(layout_left+View_X_Width);
+                          layout_bottom = (int)Screen_MAX_Hight;
+                          layout_top = (int) (layout_bottom - View_Y_Hight);
+
+                          Log.d(TAG, "ios_spring_release: 下边释放弹出>>>> " + toY + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
+
+                      }
+
+                      animation(); //开始进行位移动画
+                  }
+
 
             }
 
@@ -390,8 +389,10 @@ public class MovingView extends ConstraintLayout {
     }
 
     private void updateParams(int left,int top,int right, int bottom){
+        Log.d(TAG, "ios_spring_release: >>释放弹出>>>>updateParams数据为>>> " + left + " " + top + " " + right + " " + bottom + " " );
+
         this.clearAnimation();
-        this.layout((int)left,getTop(),right,bottom);
+        this.layout((int)left,top,right,bottom);
 
     }
     private void updateover_Params(){
