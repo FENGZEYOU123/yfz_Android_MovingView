@@ -58,6 +58,9 @@ public class MovingView extends ConstraintLayout {
     private double spring_dis = 10,more_slow=0.1;
     private boolean spring_open_press=true,spring_open_release=true,spring_open_release_popup=true;
     private double popup_W=0.0,popup_H=0.0,popup_rate=0.5;
+    private   int fromX=0,toX=0,fromY=0,toY=0;  //弹出横移位置计算
+    private   int layout_left=0,layout_top=0,layout_right=0,layout_bottom=0;  //横移后，结束位置，将属性也改变
+
     /**
      *  ***弹簧属性设置
      *   spring_open_press 开启压缩弹簧属性,spring_open_release 开启释放弹簧属性，spring_open_release_popup开启释放弹簧后popup属性
@@ -285,9 +288,9 @@ public class MovingView extends ConstraintLayout {
     private double popup_W(double Left,double Right){
         double W=0.0;
         if(Left<0){   //如果说超出左边W
-            W= Math.abs(Left);
+            W= Left;
         }else if( Left>0 && Right>Screen_MAX_Width )  {  //如果说超出右边W
-            W= Math.abs(Right-Screen_MAX_Width);
+            W= Right-Screen_MAX_Width;
         }
         Log.d(TAG, "press_speed: 储存的W为   "+W  );
         return W ;
@@ -296,9 +299,9 @@ public class MovingView extends ConstraintLayout {
     private double popup_H(double Top,double Bottom){
         double H=0.0;
         if(Top<0){   //如果说超出上边H
-            H= Math.abs(Top);
+            H= Top;
         }else if( Top>0 && Bottom>Screen_MAX_Hight)  {  //如果说超出下边H
-            H= Math.abs(Bottom-Screen_MAX_Hight);
+            H= Bottom-Screen_MAX_Hight;
         }
 
         Log.d(TAG, "press_speed: 储存的H为   "+H );
@@ -312,42 +315,88 @@ public class MovingView extends ConstraintLayout {
      **/
     private  void ios_spring_release(final double popup_W, final double popup_H) { //ios弹簧方法-释放
         //当开启弹簧效果，且任意一边超出屏幕边界
+            if(spring_open_release) {  //如果开启此功能的话
 
-            if (spring_open_release && (getLeft() < popup_W || getTop() < popup_H || getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight)) {
-                Log.d(TAG, "恢复原来位置  popup_W"+popup_W+"    popup_H"+popup_H);
+                if (getLeft() < popup_W ) {
+                    toX= (int) (-1*popup_W * 3);
+                    layout_left=0;
+                    layout_top=getTop();
+                    layout_right=(int)(View_X_Width+popup_W*2);
+                    layout_bottom=(int)(getTop()+View_Y_Hight);
+                    animation();
+                    Log.d(TAG, "ios_spring_release: 左边释放弹出>>>> "+toX);
 
-                TranslateAnimation transAnim = new TranslateAnimation(0, (int)(popup_W*3), 0, (int)popup_H*3);
-                transAnim.setDuration(300);
-//              transAnim.setFillAfter(true);
-                transAnim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+                }else if(getRight()>Screen_MAX_Width){
+                    toX= (int) ((-1*popup_W * 3));
+                    layout_top=getTop();
+                    layout_left=(int)(Screen_MAX_Width-View_X_Width);
+                    layout_right=(int)(Screen_MAX_Width);
+                    layout_bottom=(int)(getTop()+View_Y_Hight);
 
-                    }
+                    animation();
+                    Log.d(TAG, "ios_spring_release: 右边释放弹出>>>> "+toX);
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        updateParams();
-                    }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
 
-                    }
-                });
-                this.startAnimation(transAnim);
+
+//                if(getRight() > Screen_MAX_Width || getBottom() > Screen_MAX_Hight){
+//                    TranslateAnimation transAnim = new TranslateAnimation(0, (int)(Screen_MAX_Width+(-1* (popup_W * 3))), 0, (int)(Screen_MAX_Hight+(-1* (popup_W * 3))));
+//                    transAnim.setDuration(300);
+//                    transAnim.setAnimationListener(new Animation.AnimationListener() {
+//                        @Override
+//                        public void onAnimationStart(Animation animation) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAnimationEnd(Animation animation) {
+//                            updateover_Params();
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animation animation) {
+//
+//                        }
+//                    });
+//                    this.startAnimation(transAnim);
+//                }
 
             }
 
+    }
+    private void animation(){
+        TranslateAnimation transAnim = new TranslateAnimation(fromX, toX, fromY, toY);
+        transAnim.setDuration(300);
+        transAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                updateParams(layout_left,layout_top,layout_right,layout_bottom);
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        this.startAnimation(transAnim);
 
     }
-    private void updateParams(){
-        this.clearAnimation();
-        this.layout((int)0,getTop(),(int)(View_X_Width+popup_W*2),(int)(getTop()+View_Y_Hight));
 
-//        TranslateAnimation transAnim = new TranslateAnimation(200, -100, 0, 0);
-//        transAnim.setDuration(300);
-//        this.startAnimation(transAnim);
+    private void updateParams(int left,int top,int right, int bottom){
+        this.clearAnimation();
+        this.layout((int)left,getTop(),right,bottom);
+
+    }
+    private void updateover_Params(){
+        this.clearAnimation();
+        this.layout((int)0,getTop(),-1*(int)(View_X_Width+popup_W*2),-1*(int)(getTop()+View_Y_Hight));
 
     }
     /**
