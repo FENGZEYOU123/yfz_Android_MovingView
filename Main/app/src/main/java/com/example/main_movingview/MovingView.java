@@ -317,21 +317,19 @@ public class MovingView extends ConstraintLayout {
         //当开启弹簧效果，且任意一边超出屏幕边界
             if(spring_open_release) {  //如果开启此功能的话
                   if(getLeft()<popup_W||getRight()>Screen_MAX_Width||getTop()<popup_H||getBottom()>Screen_MAX_Hight) {
+                      layout_left=getLeft(); layout_top=getTop();layout_right=(int)(layout_left+View_X_Width);   layout_bottom = (int) (layout_top + View_Y_Hight);
+
                       if (getLeft() < popup_W) {
                           toX = (int) (-1 * popup_W * 3);
                           layout_left = 0;
-                          layout_top = getTop();
-                          layout_right = (int) (View_X_Width + layout_left);
-                          layout_bottom = (int) (getTop() + View_Y_Hight);
+                          layout_right=(int)(layout_left+View_X_Width);
 //
                           Log.d(TAG, "ios_spring_release: 左边释放弹出>>>> " + toX + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
 
                       } else if (getRight() > Screen_MAX_Width) {
                           toX = (int) ((-1 * popup_W * 3));
-                          layout_top = getTop();
                           layout_left = (int) (Screen_MAX_Width - View_X_Width);
                           layout_right = (int) (Screen_MAX_Width);
-                          layout_bottom = (int) (getTop() + View_Y_Hight);
                           Log.d(TAG, "ios_spring_release: 右边释放弹出>>>> " + toX + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
 
                       }
@@ -339,8 +337,6 @@ public class MovingView extends ConstraintLayout {
 
                       if (getTop() < popup_H) {
                           toY = (int) (-1 * popup_H * 3);
-                          layout_left=getLeft();
-                          layout_right=(int)(layout_left+View_X_Width);
                           layout_top = 0;
                           layout_bottom = (int) (layout_top + View_Y_Hight);
                           Log.d(TAG, "ios_spring_release: 上边释放弹出>>>> " + toY + " " + layout_left + " " + layout_top + " " + layout_right + " " + layout_bottom);
@@ -348,8 +344,7 @@ public class MovingView extends ConstraintLayout {
                       } else if (getBottom() > Screen_MAX_Hight) {
 
                           toY = (int) (-1 * popup_H * 3);
-                          layout_left=getLeft();
-                          layout_right=(int)(layout_left+View_X_Width);
+
                           layout_bottom = (int)Screen_MAX_Hight;
                           layout_top = (int) (layout_bottom - View_Y_Hight);
 
