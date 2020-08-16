@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.example.main_movingview.MovingView
+    <com.example.main_movingview.yfz_Moving_ConstraintLayout
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:background="#2F4F4F"
         tools:ignore="MissingConstraints">
 
-    </com.example.main_movingview.MovingView>
+    </com.example.main_movingview.yfz_Moving_ConstraintLayout>
 
 
 
