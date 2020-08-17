@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
@@ -37,7 +38,7 @@ import java.util.TimerTask;
  *
  *
  * **/
-public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
+public class yfz_Moving_ConstraintLayout extends ViewGroup {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
@@ -137,6 +138,11 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -190,10 +196,12 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
                     limited_in_Max_Screen(limited_open);  //限制组件范围，不超过屏幕
                     attach_boundary(attach_open);          //吸边 当组件靠近四边时会有吸附上去的效果
                     ios_spring_press(spring_open_press);         //模仿ios动画-弹簧阻尼效果-压缩，允许移动超过屏幕，但不超过组件自身的1/2大小。且释放之后会自动回弹
-
+                        //防止超出容器边界，而无法进行动画操作
+                    if(Display_Left>(-1*View_X_Width+1)&&Display_Top>(-1*View_Y_Hight+1)&&Display_Bottom<(Screen_MAX_Hight+View_Y_Hight-1)&&Display_Right<(Screen_MAX_Width+View_X_Width-1)){
+                       this.layout( (int)Display_Left,  (int)Display_Top,  (int)Display_Right, (int)Display_Bottom); //左，上，右，下
+                    }
                     // 刷新组件位置，形成组件跟随手指移动的效果
                     //https://www.cnblogs.com/xyhuangjinfu/p/5435253.html view的layout原理文章
-                    this.layout( (int)Display_Left,  (int)Display_Top,  (int)Display_Right, (int)Display_Bottom); //左，上，右，下
             break;
 
             case MotionEvent.ACTION_UP:  //当手指上抬起（停止触屏屏幕）
@@ -271,8 +279,6 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
 
             }
 
-//           getLeft()<0: popup_W(Display_Left);
-//            popup_H(Display_Top);
         }
     }
 
