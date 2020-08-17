@@ -2,6 +2,7 @@ package com.example.main_movingview;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Timer;
@@ -136,6 +138,7 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {  //拿到测量的组件值
         View_X_Width=getMeasuredWidth();  //记录组件宽度
@@ -143,6 +146,10 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
         Log.d(TAG, "View_X_Width 组件宽度 "+View_X_Width);
         Log.d(TAG, "View_Y_Hight 组件长度 "+View_Y_Hight);
         Log.e(TAG, "-----------------------------------------");
+//        this.setClipChildren(false);
+//        this.setClipToPadding(false);
+
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
     }
@@ -167,8 +174,8 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
                 //记录移动距离
                     Move_X_Distance = (double)event.getX() - Finger_X;  //记录移动的距离X
                     Move_Y_Distance = (double)event.getY() - Finger_Y;  //记录移动的距离Y
-                    Log.d(TAG, "Move_X_Distance 移动距离为: " + Move_X_Distance);
-                    Log.d(TAG, "Move_Y_Distance 移动距离为: " + Move_Y_Distance);
+//                    Log.d(TAG, "Move_X_Distance 移动距离为: " + Move_X_Distance);
+//                    Log.d(TAG, "Move_Y_Distance 移动距离为: " + Move_Y_Distance);
                     Log.e(TAG, "....................................");
 
                     //将要展示的组件的四个顶点位置
@@ -274,10 +281,10 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
         double speed=0.0;
         if(get_view<0) {
             speed = 0.1*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view)));
-            Log.d(TAG, "press_speed: Display_Left" + "  " + Move_X_Distance+"     "+(double)(Math.sqrt(Math.abs(get_view))));
+//            Log.d(TAG, "press_speed: Display_Left" + "  " + Move_X_Distance+"     "+(double)(Math.sqrt(Math.abs(get_view))));
         }else{
             speed = 0.1*more_slow * (Move_X_Distance) * (double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width)) );
-            Log.d(TAG, "press_speed: Display_Right" + "  " + Move_X_Distance+"   "+(double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width))));
+//            Log.d(TAG, "press_speed: Display_Right" + "  " + Move_X_Distance+"   "+(double)(Math.sqrt(Math.abs(get_view-Screen_MAX_Width))));
 
 
         }
@@ -318,7 +325,7 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
             if(spring_open_release) {  //如果开启此功能的话
                   if(getLeft()<popup_W||getRight()>Screen_MAX_Width||getTop()<popup_H||getBottom()>Screen_MAX_Hight) {
                       layout_left=getLeft(); layout_top=getTop();layout_right=(int)(layout_left+View_X_Width);   layout_bottom = (int) (layout_top + View_Y_Hight);
-
+                      toX=0;toY=0;
                       if (getLeft() < popup_W) {
                           toX = (int) (-1 * popup_W * 3);
                           layout_left = 0;
@@ -360,16 +367,21 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
 
     }
     private void animation(){
+
         TranslateAnimation transAnim = new TranslateAnimation(fromX, toX, fromY, toY);
         transAnim.setDuration(300);
         transAnim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                Log.d(TAG, "弹出动画开始>>>>");
+
 
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
+                Log.d(TAG, "弹出动画停止>>开始回到边界位置");
+
                 updateParams(layout_left,layout_top,layout_right,layout_bottom);
 
             }
@@ -384,10 +396,12 @@ public class yfz_Moving_ConstraintLayout extends ConstraintLayout {
     }
 
     private void updateParams(int left,int top,int right, int bottom){
-        Log.d(TAG, "ios_spring_release: >>释放弹出>>>>updateParams数据为>>> " + left + " " + top + " " + right + " " + bottom + " " );
+        Log.d(TAG, "成功---弹出开始回到边界位置>>>>updateParams数据为>>> " + left + " " + top + " " + right + " " + bottom + " " );
 
         this.clearAnimation();
         this.layout((int)left,top,right,bottom);
+        layout_left=0;layout_bottom=0;layout_top=0;layout_right=0;
+        popup_H=0;popup_W=0;
 
     }
     private void updateover_Params(){
