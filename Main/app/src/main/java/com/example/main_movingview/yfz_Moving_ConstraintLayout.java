@@ -38,7 +38,7 @@ import java.util.TimerTask;
  *
  *
  * **/
-public class yfz_Moving_ConstraintLayout extends ViewGroup {
+public class yfz_Moving_ConstraintLayout extends LinearLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
