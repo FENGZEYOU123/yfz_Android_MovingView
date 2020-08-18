@@ -38,7 +38,7 @@ import java.util.TimerTask;
  *
  *
  * **/
-public class yfz_Moving_ConstraintLayout extends LinearLayout {
+public class yfz_ios_Moving_LinearLayout extends LinearLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
@@ -118,11 +118,11 @@ public class yfz_Moving_ConstraintLayout extends LinearLayout {
      *   （手指移动的距离-手指第一次点击组件记录的值）
      **/
 
-    public yfz_Moving_ConstraintLayout(Context context) {
+    public yfz_ios_Moving_LinearLayout(Context context) {
         super(context);
 
     }
-    public yfz_Moving_ConstraintLayout(Context context, @Nullable AttributeSet attrs) {
+    public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs) {
         super(context,attrs);
         this.context=context;
 
@@ -133,7 +133,7 @@ public class yfz_Moving_ConstraintLayout extends LinearLayout {
         Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
     }
-    public yfz_Moving_ConstraintLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 
         super(context, attrs, defStyleAttr);
     }

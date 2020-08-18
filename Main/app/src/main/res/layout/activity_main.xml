@@ -9,7 +9,7 @@
 
 
 
-    <com.example.main_movingview.yfz_Moving_ConstraintLayout
+    <com.example.main_movingview.yfz_ios_Moving_LinearLayout
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -20,7 +20,7 @@
         android:background="#2F4F"
         tools:ignore="MissingConstraints">
 
-    </com.example.main_movingview.yfz_Moving_ConstraintLayout>
+    </com.example.main_movingview.yfz_ios_Moving_LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
