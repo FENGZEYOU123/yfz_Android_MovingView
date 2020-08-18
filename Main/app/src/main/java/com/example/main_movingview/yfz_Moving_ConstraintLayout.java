@@ -273,7 +273,7 @@ public class yfz_Moving_ConstraintLayout extends LinearLayout {
                 Log.d(TAG, "ios_spring_press: 小于上边spring_dis距离的:getTop()  " + getTop());
 
             } else if (getBottom() > Screen_MAX_Hight) {
-                Display_Bottom = (double) (getBottom() + press_speed(more_slow, Move_Y_Distance, getBottom()));
+                Display_Bottom = (double) (getBottom() + press_speed(more_slow, Move_Y_Distance, getBottom())*0.3);
                 Display_Top = Display_Bottom - View_Y_Hight;
                 Log.d(TAG, "ios_spring_press: 小于下边spring_dis距离的:getBottom()  " + getBottom());
 
@@ -474,7 +474,7 @@ public class yfz_Moving_ConstraintLayout extends LinearLayout {
 
 
 
-            if(dir!="") { Log.e(TAG, "**********Move_Direction 移动方向为： " + dir); }
+//            if(dir!="") { Log.e(TAG, "**********Move_Direction 移动方向为： " + dir); }
         return dir;
 
     }
