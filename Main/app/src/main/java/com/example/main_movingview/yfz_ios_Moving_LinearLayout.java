@@ -38,6 +38,8 @@ import java.util.TimerTask;
  *
  *
  * **/
+
+//https://github.com/FENGZEYOU123
 public class yfz_ios_Moving_LinearLayout extends LinearLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
