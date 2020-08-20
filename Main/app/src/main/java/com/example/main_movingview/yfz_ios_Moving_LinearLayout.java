@@ -2,10 +2,12 @@ package com.example.main_movingview;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,7 +15,9 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -40,7 +44,7 @@ import java.util.TimerTask;
  * **/
 
 //https://github.com/FENGZEYOU123
-public class yfz_ios_Moving_LinearLayout extends LinearLayout {
+public class yfz_ios_Moving_LinearLayout extends ConstraintLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
@@ -122,11 +126,14 @@ public class yfz_ios_Moving_LinearLayout extends LinearLayout {
 
     public yfz_ios_Moving_LinearLayout(Context context) {
         super(context);
+        this.context=context;
+
 
     }
     public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs) {
         super(context,attrs);
         this.context=context;
+        https://bbs.csdn.net/topics/392299397
 
         wm= (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         wm.getDefaultDisplay().getMetrics( dm );
@@ -134,10 +141,27 @@ public class yfz_ios_Moving_LinearLayout extends LinearLayout {
         Screen_MAX_Width=dm.widthPixels;
         Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
+        TextView textView = new TextView(context);
+
+        textView.setText("this is title");
+        textView.setTextColor(Color.RED);
+
+        textView.setLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        this.addView(textView);//没法显示出来
+        /*如果添加的是一个Button,就能正常的显示出来*/
+        /*Button btn = new Button(context);
+        btn.setText("this is btn");
+        this.addView(btn);*/
+
+
+//        initView(context);
+
     }
     public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
 
         super(context, attrs, defStyleAttr);
+
     }
 
     @Override
@@ -145,6 +169,26 @@ public class yfz_ios_Moving_LinearLayout extends LinearLayout {
 
     }
 
+
+    /**
+     * 初始化View
+     *
+     * @param context
+     */
+    private void initView(Context context) {
+        View rootView = View.inflate(context, R.layout.activity_main, null);
+        addView(rootView);
+    }
+
+    /**
+     * 动态添加View
+     * @param str
+     */
+    public void autoAddView(String str){
+        Button button = new Button(getContext());
+        button.setText(str);
+        addView(button);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
@@ -161,6 +205,23 @@ public class yfz_ios_Moving_LinearLayout extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
     }
+
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        post(measureAndLayout);
+    }
+
+    private final Runnable measureAndLayout = new Runnable() {
+        @Override
+        public void run() {
+            measure(
+                    MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY),
+                    MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.EXACTLY));
+            layout(getLeft(), getTop(), getRight(), getBottom());
+        }
+    };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
