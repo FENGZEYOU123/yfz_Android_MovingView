@@ -127,7 +127,12 @@ public class yfz_ios_Moving_LinearLayout extends ConstraintLayout {
     public yfz_ios_Moving_LinearLayout(Context context) {
         super(context);
         this.context=context;
-
+        wm= (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics( dm );
+        Screen_MAX_Hight=dm.heightPixels;
+        Screen_MAX_Width=dm.widthPixels;
+        Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
+        Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
 
     }
     public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs) {
@@ -141,33 +146,22 @@ public class yfz_ios_Moving_LinearLayout extends ConstraintLayout {
         Screen_MAX_Width=dm.widthPixels;
         Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
-        TextView textView = new TextView(context);
-
-        textView.setText("this is title");
-        textView.setTextColor(Color.RED);
-
-        textView.setLayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        this.addView(textView);//没法显示出来
-        /*如果添加的是一个Button,就能正常的显示出来*/
-        /*Button btn = new Button(context);
-        btn.setText("this is btn");
-        this.addView(btn);*/
-
-
-//        initView(context);
-
     }
-    public yfz_ios_Moving_LinearLayout(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public yfz_ios_Moving_LinearLayout(Context context, AttributeSet attrs, int defStyle)
+    {
+        super(context,attrs,defStyle);
+        this.context=context;
+        https://bbs.csdn.net/topics/392299397
 
-        super(context, attrs, defStyleAttr);
-
+        wm= (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        wm.getDefaultDisplay().getMetrics( dm );
+        Screen_MAX_Hight=dm.heightPixels;
+        Screen_MAX_Width=dm.widthPixels;
+        Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
+        Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-    }
 
 
     /**

@@ -23,15 +23,6 @@ public class MainActivity extends AppCompatActivity {
         listview = (yfz_ios_spring_listview) findViewById(R.id.mylistview);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, new String[] { "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"});
         listview.setAdapter(adapter);
-//
-//        yfz_ios_Moving_LinearLayout aaaaa= findViewById(R.id.aaaaa);
-//        TextView vv= new TextView(this);
-//        vv.setWidth(10);
-//        vv.setHeight(10);
-//
-//        vv.setText("adasdasdas");
-//        aaaaa.addView(vv);
-//        vv.measure(10,10);
 
 
 
