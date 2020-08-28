@@ -6,13 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
-    <com.example.main_movingview.yfz_ios_spring_listview
-        android:id="@+id/mylistview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-    </com.example.main_movingview.yfz_ios_spring_listview>
-
     <com.example.main_movingview.yfz_ios_Moving_LinearLayout
         android:id="@+id/aaaaa"
         android:foregroundGravity="center"
@@ -21,14 +14,6 @@
         android:layout_height="100dp"
         android:background="#2F4F"
         tools:ignore="MissingConstraints">
-        <ImageView
-            android:layout_width="match_parent"
-            android:src="@drawable/ic_launcher_background"
-            android:layout_height="match_parent"></ImageView>
-
     </com.example.main_movingview.yfz_ios_Moving_LinearLayout>
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
