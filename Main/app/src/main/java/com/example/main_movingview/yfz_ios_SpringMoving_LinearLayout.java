@@ -45,7 +45,7 @@ import java.util.TimerTask;
  * **/
 
 //https://github.com/FENGZEYOU123
-public class yfz_ios_SpringMoving_RelativeLayout extends RelativeLayout {
+public class yfz_ios_SpringMoving_LinearLayout extends LinearLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
@@ -125,7 +125,7 @@ public class yfz_ios_SpringMoving_RelativeLayout extends RelativeLayout {
      *   （手指移动的距离-手指第一次点击组件记录的值）
      **/
 
-    public yfz_ios_SpringMoving_RelativeLayout(Context context) {
+    public yfz_ios_SpringMoving_LinearLayout(Context context) {
         super(context);
         this.context=context;
         wm= (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -136,7 +136,7 @@ public class yfz_ios_SpringMoving_RelativeLayout extends RelativeLayout {
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
 
     }
-    public yfz_ios_SpringMoving_RelativeLayout(Context context, @Nullable AttributeSet attrs) {
+    public yfz_ios_SpringMoving_LinearLayout(Context context, @Nullable AttributeSet attrs) {
         super(context,attrs);
         this.context=context;
         https://bbs.csdn.net/topics/392299397
@@ -148,7 +148,7 @@ public class yfz_ios_SpringMoving_RelativeLayout extends RelativeLayout {
         Log.d(TAG, "Screen_MAX_Hight 屏幕最大长度 "+Screen_MAX_Hight);
         Log.d(TAG, "Screen_MAX_Width 屏幕最大宽度 "+Screen_MAX_Width);
     }
-    public yfz_ios_SpringMoving_RelativeLayout(Context context, AttributeSet attrs, int defStyle)
+    public yfz_ios_SpringMoving_LinearLayout(Context context, AttributeSet attrs, int defStyle)
     {
         super(context,attrs,defStyle);
         this.context=context;
