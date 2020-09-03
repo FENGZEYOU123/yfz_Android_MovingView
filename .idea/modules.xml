@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/iosStyle_SpringMovingView.iml" filepath="$PROJECT_DIR$/.idea/iosStyle_SpringMovingView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Main_MovingView.iml" filepath="$PROJECT_DIR$/.idea/modules/Main_MovingView.iml" group="Main_MovingView" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="Main_MovingView/app" />
     </modules>
   </component>
 </project>
