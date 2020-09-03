@@ -32,7 +32,7 @@ import java.util.TimerTask;
  *  开始日期：2020年7月13日
  *  最后更新日期：2020年8月6日
  *
- *  功能介绍：可移动组件view，带有各种效果
+ *  功能介绍：模仿ios可移动组件，带有各种效果
  *
  *
  *      limited_in_Max_Screen(limited_open);  //限制组件范围，不超过屏幕. limited_open 为true的话 则限制，否则自由移动
