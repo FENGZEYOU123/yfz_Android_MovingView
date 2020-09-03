@@ -44,8 +44,7 @@ import java.util.TimerTask;
  *
  * **/
 
-//https://github.com/FENGZEYOU123
-public class yfz_ios_SpringMoving_LinearLayout extends LinearLayout {
+public class yfz_ios_SpringMoving_LinearLayout extends RelativeLayout {
     private String TAG="移动组件：    ";
     private DisplayMetrics dm= new DisplayMetrics();
     private Context context;
